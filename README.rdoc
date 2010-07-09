@@ -37,6 +37,26 @@ You can pass multiple symbols to the *param* method to parameterize on multiple 
   
       param :year, :month, :day, :title
     end
+    
+== Customizing your Param values
+
+You can easily customize your param value by passing a method to param:
+
+    class Message
+      include Mongoid::Document
+      include Mongoid::Timestamps
+      include Mongoid::Param
+      
+      field :title
+      param :generate_param
+      
+      private
+      
+      def generate_param
+        created_at ||= Time.now  # necessary because we're called before validation
+        "#{created_at.year} #{created_at.month} #{created_at.day} #{title}"
+      end
+    end
 
 == Behind the Scenes
 
