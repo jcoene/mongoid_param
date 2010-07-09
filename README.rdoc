@@ -1,0 +1,86 @@
+= Mongoid::Param
+
+Addon to Mongoid that allows you to easily generate and query against human readable (parameterized) id's!
+
+== Installation
+
+Add to Gemfile:
+  
+    gem 'mongoid_param'
+
+== Getting Started
+
+To parameterize a model, you only need to include the module in your model and then call param with the field(s) you want to parameterize on.  Here's an example:
+
+    class User
+      include Mongoid::Document
+      include Mongoid::Param
+
+      field :username
+      field :dob, :type => Date
+
+      param :username
+    end
+
+== Parameterizing on Multiple Fields
+
+You can pass multiple symbols to the *param* method to parameterize on multiple fields:
+
+    class Post
+      include Mongoid::Document
+      include Mongoid::Param
+  
+      field :year
+      field :month
+      field :day
+      field :title
+  
+      param :year, :month, :day, :title
+    end
+
+== Behind the Scenes
+
+    >> u = User.new :username => 'Bob', :dob => Date.today
+    
+    >> u.to_param
+    => "bob"
+    
+    >> u.update_attributes :username => 'Johnny Walker'
+    
+    >> u.to_param
+    => "johnny_walker"
+    
+    >> p = Post.new :title => 'Big Announcement', :year => 2010, :month => 2, :day => 13
+    
+    >> p.to_param
+    => "2010_2_13_big_announcement"
+    
+    >> p.update_attributes :month => 10
+    
+    >> p.to_param
+    => "2010_10_13_big_announcement"
+
+== Usage in Rails
+
+Mongoid::Param was designed to easily work with Rails.
+
+In your controller:
+
+    class UserController < ApplicationController
+      ...
+      def show
+        @user = User.find_by_param(params[:id])
+      end
+      ...
+    end
+    
+In your view:
+
+    link_to @user.username, @user   # => /users/bob
+
+== Finding by Parameters
+
+Included is a simple helper method that allows you to easily fetch a record by its _param field:
+
+    @user = User.find_by_param('bob')
+
