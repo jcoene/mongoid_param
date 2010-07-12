@@ -68,6 +68,11 @@ describe Mongoid::Param do
       p.blank?.should eql false
     end
     
+    it "finds by scope" do
+      p = Post.param_is('2010_6_21_big_announcement').active.first
+      p.blank?.should eql false
+    end
+    
     it "does not find nonexistent things" do
       p = Post.find_by_param('2010_5_3_some_post')
       p.blank?.should eql true

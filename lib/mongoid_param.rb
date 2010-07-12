@@ -14,6 +14,7 @@ module Mongoid
         self.param_fields = on_fields
         field :_param, :type => String
         index :_param, :unique => true
+        scope :param_is, lambda {|p| where(:_param => p) }
         validates :_param, :presence => true, :uniqueness => true,
           :format => { :with => /[-a-z0-9_]+/ },
           :exclusion => { :in => %w[index show new create edit update destroy delete] }
@@ -35,7 +36,7 @@ module Mongoid
       end
       
       def to_param
-        _param
+        _param_was || _param
       end
     end
     

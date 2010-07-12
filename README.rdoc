@@ -94,6 +94,12 @@ In your controller:
       ...
     end
     
+You can also chain criteria with param_is:
+
+    ...
+    @user = User.param_is(params[:id]).active
+    ...
+    
 In your view:
 
     link_to @user.username, @user   # => /users/bob
